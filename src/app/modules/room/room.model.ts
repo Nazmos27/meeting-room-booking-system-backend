@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { Schema, model } from "mongoose";
 
 const roomSchema = new Schema<TRoom>({
     name : {
@@ -22,9 +22,15 @@ const roomSchema = new Schema<TRoom>({
         required : true
     },
     amenities : {
-        type : String[],
+        type : [String],
         required : true
 
+    },
+    isDeleted : {
+        type : Boolean,
+        required : true
     }
 
 })
+
+export const RoomModel = model<TRoom>('rooms', roomSchema)
