@@ -1,8 +1,18 @@
 import httpStatus from "http-status";
 import AppError from "../../errors/AppError";
-import { UserModel } from "../user/user.model";
 import { TLoginUser } from "./auth.interface";
-import {jwt} from 'j'
+import jwt from 'jsonwebtoken'
+import config from "../../config";
+import { TUser } from "../user/user.interface";
+import { UserModel } from "../user/user.model";
+
+
+const signUpUser = async (payload : TUser) => {
+    const newUser = await UserModel.create(payload);
+    return newUser;
+}
+
+
 
 const loginUser  = async (payload:TLoginUser) => {
     const user = await UserModel.isUserExistChecker(payload.email);
@@ -19,9 +29,15 @@ const loginUser  = async (payload:TLoginUser) => {
         role : user.role
     }
 
-    const accessToken = 
+    const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret as string, { expiresIn : '30d'})
+
+    return {
+        accessToken,
+        user
+    }
 }
 
 export const AuthServices = {
-    loginUser
+    loginUser,
+    signUpUser,
 }

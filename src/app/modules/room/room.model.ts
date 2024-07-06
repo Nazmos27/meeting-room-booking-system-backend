@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import { TRoom } from "./room.iterface";
 
 const roomSchema = new Schema<TRoom>({
     name : {
