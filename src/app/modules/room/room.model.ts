@@ -34,4 +34,14 @@ const roomSchema = new Schema<TRoom>({
 
 })
 
+roomSchema.pre('find', async function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next();
+  });
+roomSchema.pre('findOne', async function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next();
+  });
+  
+
 export const RoomModel = model<TRoom>('rooms', roomSchema)
