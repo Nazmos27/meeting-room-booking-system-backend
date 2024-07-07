@@ -21,19 +21,16 @@ const createSlotIntoDB = async (payload: TSlot) => {
 
   // Convert the difference back to hours and minutes
   const diffHours = Math.floor(difference / (1000 * 60 * 60));
-  const diffMinutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-
+  
   const slotQuantity = diffHours;
-
   const data = [];
   for (let i = 0; i < slotQuantity; i++) {
     if (i === 0) {
       const newEndTime =
-        Number(startTime.split(':')[0]) + 1 < 10
-          ? `0${Number(startTime.split(':')[0]) + 1}`
-          : `${(Number(startTime.split(':')[0]) + 1).toString()}` +
-            ':' +
-            startTime.split(':')[1];
+        (Number(startTime.split(':')[0]) + 1 < 10
+          ? `0${(Number(startTime.split(':')[0]) + 1)}`
+          : `${(Number(startTime.split(':')[0]) + 1).toString()}`) +
+            ':' + `${startTime.split(':')[1].toString()}`;
 
       const newData = {
         room: payload.room,
@@ -43,15 +40,16 @@ const createSlotIntoDB = async (payload: TSlot) => {
       };
       data.push(newData);
     } else {
-      const newStartTime = Number(startTime.split(':')[0]) + 1 < 10
-      ? `0${Number(startTime.split(':')[0]) + 1}`
-      : `${(Number(startTime.split(':')[0]) + 1).toString()}` +
-        ':' +
-        startTime.split(':')[1];
+      const newStartTime =
+        (Number(startTime.split(':')[0]) + i < 10
+          ? `0${Number(startTime.split(':')[0]) + i}`
+          : `${(Number(startTime.split(':')[0]) + i).toString()}`) +
+            ':' +
+            startTime.split(':')[1];
       const newEndTime =
-        Number(newStartTime.split(':')[0]) + 1 < 10
+        (Number(newStartTime.split(':')[0]) + 1 < 10
           ? `0${Number(newStartTime.split(':')[0]) + 1}`
-          : `${(Number(newStartTime.split(':')[0]) + 1).toString()}` +
+          : `${(Number(newStartTime.split(':')[0]) + 1).toString()}`) +
             ':' +
             startTime.split(':')[1];
 
@@ -69,6 +67,21 @@ const createSlotIntoDB = async (payload: TSlot) => {
   return newSlot;
 };
 
+const getAvailableSlots = async (query?: Record<string, unknown>) => {
+  console.log(query);
+  if (!query) {
+    const result = await SlotModel.find().populate('room');
+    return result;
+  } else {
+    const { date, roomId } = query;
+    const result = await SlotModel.find({ date, room: roomId }).populate(
+      'room',
+    );
+    return result;
+  }
+};
+
 export const SlotServices = {
   createSlotIntoDB,
+  getAvailableSlots,
 };
