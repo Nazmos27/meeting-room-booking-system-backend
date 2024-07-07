@@ -1,54 +1,71 @@
-import { Schema, model } from "mongoose";
-import { TSlot } from "./slot.interface";
+import { Schema, model } from 'mongoose';
+import { TSlot } from './slot.interface';
 
 const slotSchema = new Schema<TSlot>({
-    room : {
-        type : Schema.Types.ObjectId,
-        ref : 'rooms'
-    },
-    date : {
-        type : String,
-        required : true
-    },
-    startTime : {
-        type : String,
-        required : true
-    },
-    endTime : {
-        type : String,
-        required : true
-    },
-    isBooked : {
-        type : Boolean,
-    }
-})
+  room: {
+    type: Schema.Types.ObjectId,
+    ref: 'rooms',
+  },
+  date: {
+    type: String,
+    required: true,
+  },
+  startTime: {
+    type: String,
+    required: true,
+  },
+  endTime: {
+    type: String,
+    required: true,
+  },
+  isBooked: {
+    type: Boolean,
+  },
+});
 
-slotSchema.pre('save', async function(next){
-    this.isBooked = false
-    next()
-})
+slotSchema.pre('save', async function (next) {
+  this.isBooked = false;
+  next();
+});
 
-slotSchema.pre('save', async function(next){
-    const startTimeH = Number(this.startTime.split(':')[0])
-    const endTimeH = Number(this.endTime.split(':')[0])
-    const startTimeM = Number(this.startTime.split(':')[1])
-    const endTimeM = Number(this.endTime.split(':')[1])
-    const duration = (endTimeH - startTimeH) * 60 + (endTimeM - startTimeM)
-    const slotQuantity = Math.floor(duration/60)
-    const valuestart = this.startTime
-        const valuestop = this.endTime
+// slotSchema.pre('save', async function (next) {
 
-             //create date format       
-        const timeStart = new Date("01/01/2007 " + valuestart);
-        const timeEnd = new Date("01/01/2007 " + valuestop);
 
-        const difference = (timeEnd - timeStart);            
-        const diff_result = new Date(difference);    
 
-        const hourDiff = diff_result.getHours();
-    console.log(hourDiff);
-    next()
 
-})
+// //   const [startHours, startMinutes] = this.startTime.split(':').map(Number);
+// //   const [endHours, endMinutes] = this.endTime.split(':').map(Number);
 
-export const SlotModel = model<TSlot>('slots', slotSchema)
+// //   const startDate = new Date(0, 0, 0, startHours, startMinutes);
+// //   const endDate = new Date(0, 0, 0, endHours, endMinutes);
+
+// //   // Calculate the difference in milliseconds
+// //   let difference = endDate - startDate;
+
+// //   // If the difference is negative, it means the end time is past midnight
+// //   if (difference < 0) {
+// //     difference += 24 * 60 * 60 * 1000;
+// //   }
+
+// //   // Convert the difference back to hours and minutes
+// //   const diffHours = Math.floor(difference / (1000 * 60 * 60));
+// //   const diffMinutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+
+// //   const slotQuantity = diffHours;
+
+// //   for (let i = 0; i <= slotQuantity; i++) {
+// //     if (i === 0) {
+// //       this.endTime = (Number(this.startTime.split(':')[0]) + 1) < 10 ? `0${(Number(this.startTime.split(':')[0]) + 1)}` : `${(Number(this.startTime.split(':')[0]) + 1).toString()}` +  ':' + this.startTime.split(':')[1];
+
+// //     } else {
+// //         this.startTime = this.endTime
+
+// //         this.endTime = (Number(this.startTime.split(':')[0]) + 1) < 10 ? `0${(Number(this.startTime.split(':')[0]) + 1)}` : `${(Number(this.startTime.split(':')[0]) + 1).toString()}` +  ':' + this.startTime.split(':')[1];
+// //     }
+// //   }
+
+//   //   const diff = `${diffHours}:${diffMinutes < 10 ? '0' : ''}${diffMinutes}`;
+//   next();
+// });
+
+export const SlotModel = model<TSlot>('slots', slotSchema);
