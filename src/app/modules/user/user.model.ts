@@ -42,7 +42,13 @@ userSchema.post('save', function (doc, next) {
   });
 
 userSchema.statics.isUserExistChecker = async function( data : Record<string, unknown>) {
-    return await UserModel.findOne({email: data.email}).select('+password')
+    if(data.id !== ''){
+        return await UserModel.findOne({_id: data.id}).select('+password')
+    }
+    if(data.email){
+        return await UserModel.findOne({email: data.email}).select('+password')
+    }
+    
 }
 
 userSchema.statics.isPasswordMatchedChecker = async function(plaintextPassword: string, hashedPassword : string) {
