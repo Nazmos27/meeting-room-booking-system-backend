@@ -12,7 +12,7 @@ export type TUser = {
 }
 
 export interface UserModelInterface extends Model<TUser> {
-    isUserExistChecker( email : string) : Promise<TUser>;
+    isUserExistChecker( data : Record<string, unknown>) : Promise<TUser>;
     isPasswordMatchedChecker( plaintextPassword : string, hashedPassword : string) : Promise<boolean>;
 }
 

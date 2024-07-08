@@ -1,4 +1,4 @@
-import { Types } from "mongoose"
+import { Model, Types } from "mongoose"
 
 export type TSlot = {
     room : Types.ObjectId,
@@ -6,4 +6,8 @@ export type TSlot = {
     startTime : string,
     endTime : string,
     isBooked? : boolean
+}
+
+export interface SlotModelInterface extends Model<TSlot> {
+    isSlotExistsChecker( id : Types.ObjectId) : Promise<TSlot>
 }

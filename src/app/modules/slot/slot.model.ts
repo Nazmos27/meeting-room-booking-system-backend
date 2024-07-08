@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
-import { TSlot } from './slot.interface';
+import { SlotModelInterface, TSlot } from './slot.interface';
 
-const slotSchema = new Schema<TSlot>({
+const slotSchema = new Schema<TSlot, SlotModelInterface>({
   room: {
     type: Schema.Types.ObjectId,
     required : true,
@@ -34,6 +34,12 @@ slotSchema.pre('find', async function (next) {
     next();
   });
 
+slotSchema.statics.isSlotExistsChecker = async function (
+  id: Schema.Types.ObjectId,
+) {
+  return await SlotModel.findOne({ _id:id });
+};
 
 
-export const SlotModel = model<TSlot>('slots', slotSchema);
+
+export const SlotModel = model<TSlot, SlotModelInterface>('slots', slotSchema);

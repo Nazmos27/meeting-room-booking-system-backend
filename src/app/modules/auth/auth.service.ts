@@ -15,7 +15,11 @@ const signUpUser = async (payload : TUser) => {
 
 
 const loginUser  = async (payload:TLoginUser) => {
-    const user = await UserModel.isUserExistChecker(payload.email);
+    const data = {
+        id: '',
+        email: payload.email,
+    }
+    const user = await UserModel.isUserExistChecker(data);
     if(!user){
         throw new AppError(httpStatus.NOT_FOUND, "User not exist")
     }

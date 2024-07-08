@@ -5,14 +5,17 @@ const bookingSchema = new Schema<TBooking>({
     room : {
         type : Schema.Types.ObjectId,
         required : true,
+        ref : 'rooms'
     },
     slots : {
         type : Schema.Types.ObjectId,
         required : true,
+        ref : 'slots'
     },
     user : {
         type : Schema.Types.ObjectId,
         required : true,
+        ref : 'users'
     },
     date : {
         type : String,
