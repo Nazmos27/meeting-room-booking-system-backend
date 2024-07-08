@@ -1,47 +1,56 @@
-import { Schema, model } from "mongoose";
-import { TRoom } from "./room.iterface";
+import { Schema, model } from 'mongoose';
+import { RoomModelInterface, TRoom } from './room.iterface';
 
-const roomSchema = new Schema<TRoom>({
-    name : {
-        type : String,
-        required : true
-    },
-    roomNo : {
-        type : Number,
-        required : true
-    },
-    floorNo : {
-        type : Number,
-        required : true
-    },
-    capacity : {
-        type : Number,
-        required : true
-    },
-    pricePerSlot : {
-        type : Number,
-        required : true
-    },
-    amenities : {
-        type : [String],
-        required : true
+const roomSchema = new Schema<TRoom, RoomModelInterface>({
+  name: {
+    type: String,
+    required: true,
+  },
+  roomNo: {
+    type: Number,
+    required: true,
+  },
+  floorNo: {
+    type: Number,
+    required: true,
+  },
+  capacity: {
+    type: Number,
+    required: true,
+  },
+  pricePerSlot: {
+    type: Number,
+    required: true,
+  },
+  amenities: {
+    type: [String],
+    required: true,
+  },
+  isDeleted: {
+    type: Boolean,
+    required: true,
+  },
+});
 
-    },
-    isDeleted : {
-        type : Boolean,
-        required : true
-    }
+// roomSchema.pre('find', async function (next) {
+//   this.find({ isDeleted: { $ne: true } });
+//   next();
+// });
+// roomSchema.pre('findOne', async function (next) {
+//   this.find({ isDeleted: { $ne: true } });
+//   next();
+// }); //this make conflict while creating slot with deleted room...insteadof showing "Room is deleted", it shows "Room does not exist", as when conducting find operation, pre hook middleware was preventing to get data of where isDeleted field is true
 
-})
+roomSchema.statics.isRoomExistChecker = async function (
+  id: Schema.Types.ObjectId,
+) {
+  return await RoomModel.findOne({ _id:id });
+};
 
-roomSchema.pre('find', async function (next) {
-    this.find({ isDeleted: { $ne: true } });
-    next();
-  });
-roomSchema.pre('findOne', async function (next) {
-    this.find({ isDeleted: { $ne: true } });
-    next();
-  });
-  
+roomSchema.statics.isRoomDeletedChecker = async function( roomData : TRoom) {
+    return roomData?.isDeleted;
+}
 
-export const RoomModel = model<TRoom>('rooms', roomSchema)
+
+
+export const RoomModel = model<TRoom, RoomModelInterface>('rooms', roomSchema);
