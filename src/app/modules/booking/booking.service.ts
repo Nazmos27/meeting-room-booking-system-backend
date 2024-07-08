@@ -5,6 +5,7 @@ import { BookingModel } from './booking.model';
 import AppError from '../../errors/AppError';
 import { SlotModel } from '../slot/slot.model';
 import { UserModel } from '../user/user.model';
+import mongoose, { Types } from 'mongoose';
 
 const createBookingIntoDB = async (payload: TBooking) => {
   //check if that room exists
@@ -18,13 +19,19 @@ const createBookingIntoDB = async (payload: TBooking) => {
 
   //check if that slot exists
   const slotArray = payload.slots;
-  slotArray.forEach(async (item) => {
-    const slot = await SlotModel.isSlotExistsChecker(item);
-    if (!slot) {
-      throw new AppError(httpStatus.NOT_FOUND, 'Slot does not exist');
+
+  const checkSlots = async (slotArray: Types.ObjectId[]) => {
+    for (const item of slotArray) {
+      const slotId = new mongoose.Types.ObjectId(item);
+      const slot = await SlotModel.isSlotExistsChecker(slotId);
+      if (!slot) {
+        throw new AppError(httpStatus.NOT_FOUND, 'Slot does not exist');
+      }
     }
     return null;
-  });
+  };
+
+  await checkSlots(slotArray);
 
   //check if the user exists
   const userDataForChecking = {
