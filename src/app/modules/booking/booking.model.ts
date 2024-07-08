@@ -1,25 +1,25 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, Types } from "mongoose";
 import { TBooking } from "./booking.interface";
 
 const bookingSchema = new Schema<TBooking>({
-    room : {
-        type : Schema.Types.ObjectId,
-        required : true,
-        ref : 'rooms'
+    date : {
+        type : String,
+        required : true
     },
     slots : {
         type : [Schema.Types.ObjectId],
         required : true,
         ref : 'slots'
     },
+    room : {
+        type : Schema.Types.ObjectId,
+        required : true,
+        ref : 'rooms'
+    },
     user : {
         type : Schema.Types.ObjectId,
         required : true,
         ref : 'users'
-    },
-    date : {
-        type : String,
-        required : true
     },
     totalAmount : {
         type : Number,
@@ -33,6 +33,15 @@ const bookingSchema = new Schema<TBooking>({
         type : Boolean,
         required : true
     }
+})
+
+bookingSchema.post('save',async function(doc,next){
+    await doc.populate([
+        { path: 'user', select: '-password' }, // Exclude password field
+        { path: 'room' },
+        { path: 'slots' }
+      ])
+    next()
 })
 
 export const BookingModel = model<TBooking>('bookings', bookingSchema)
