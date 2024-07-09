@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { TUser, UserModelInterface } from "./user.interface";
+import { TUser, TUserLoginInfo, UserModelInterface } from "./user.interface";
 import bcrypt from 'bcrypt'
 import config from "../../config";
 
@@ -31,6 +31,21 @@ const userSchema = new Schema<TUser, UserModelInterface>({
 })
 
 
+const userLoginSchema = new Schema<TUserLoginInfo>({
+    userEmail: {
+        type : String,
+        required : true,
+    },
+    loginAt : {
+        type : Date,
+        required : true
+    },
+    token : {
+        type : String,
+        required : true
+    }
+})
+
 userSchema.pre('save', async function(next){
     this.password = await bcrypt.hash(this.password, Number(config.bcrypt_salt_rounds))
     next()
@@ -60,9 +75,12 @@ userSchema.statics.isNewTokenGrantedAfterPassChangeChecker = async function (
     passwordChangedTimestamp: Date,
     tokenIssuedTimestamp: number,
   ) {
-    console.log(passwordChangedTimestamp, tokenIssuedTimestamp);
     const passwordChangedTime =
       new Date(passwordChangedTimestamp).getTime() / 1000;
-    return passwordChangedTime > tokenIssuedTimestamp;}
+      console.log(Math.floor(passwordChangedTime), tokenIssuedTimestamp);
+    return passwordChangedTime === tokenIssuedTimestamp;
+  };
 
 export const UserModel = model<TUser, UserModelInterface>('users', userSchema)
+
+export const UserLoginModel = model<TUserLoginInfo>('userLoginInfo',userLoginSchema)

@@ -1,4 +1,6 @@
 import catchAsync from "../../utils/catchAsync";
+import { UserModel } from "../user/user.model";
+import { UserServices } from "../user/user.service";
 import { AuthServices } from "./auth.service";
 
 

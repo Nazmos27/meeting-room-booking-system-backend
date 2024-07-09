@@ -5,10 +5,16 @@ import jwt from 'jsonwebtoken'
 import config from "../../config";
 import { TUser } from "../user/user.interface";
 import { UserModel } from "../user/user.model";
-
+import { UserServices } from "../user/user.service";
 
 const signUpUser = async (payload : TUser) => {
     const newUser = await UserModel.create(payload);
+    const loggedInfo = {
+        userEmail : payload.email,
+        loginAt : new Date(),
+        token : 'adfa'
+    }
+    const loggedData = await UserServices.createLoginInfoIntoDB(loggedInfo)
     return newUser;
 }
 
@@ -31,10 +37,17 @@ const loginUser  = async (payload:TLoginUser) => {
     const jwtPayload = {
         userEmail : user.email,
         role : user.role,
-        loginTime : new Date()
     }
-    console.log(jwtPayload.loginTime);
     const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret as string, { expiresIn : '30d'})
+
+    const userLoginData = {
+        userEmail : user?.email,
+        loginAt : new Date(),
+        token : accessToken
+    }
+
+    const loggedOperation = await UserServices.updateLoginInfo(userLoginData)
+    
 
     return {
         accessToken,

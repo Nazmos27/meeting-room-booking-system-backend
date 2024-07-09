@@ -5,7 +5,7 @@ import catchAsync from '../utils/catchAsync';
 import AppError from '../errors/AppError';
 import httpStatus from 'http-status';
 import config from '../config';
-import { UserModel } from '../modules/user/user.model';
+import { UserLoginModel, UserModel } from '../modules/user/user.model';
 
 
 const auth = (...requiredRoles: TUserRole[]) => {
@@ -21,7 +21,8 @@ const auth = (...requiredRoles: TUserRole[]) => {
       token,
       config.jwt_access_secret as string,
     ) as JwtPayload;
-    const { role, userEmail, iat, loginTime } = decoded;
+    console.log("decoded", decoded);
+    const { role, userEmail, iat } = decoded;
     //check if the user exist using static method
     const userDataForChecking = {
       email: userEmail,
@@ -32,7 +33,11 @@ const auth = (...requiredRoles: TUserRole[]) => {
       throw new AppError(httpStatus.NOT_FOUND, 'This user is not found');
     }
 
-    console.log(loginTime,'logintime');
+    // console.log(loginTime,'logintime', iat, 'iat');
+    console.log(user.email);
+    const userLoginData = await UserLoginModel.findOne({userEmail : user.email})
+    const loginTime = userLoginData?.loginAt
+    console.log(loginTime,'authentication',iat);
     if (
       loginTime &&
       (await UserModel.isNewTokenGrantedAfterPassChangeChecker(
@@ -40,7 +45,6 @@ const auth = (...requiredRoles: TUserRole[]) => {
         iat as number,
       ))
     ) {
-      console.log('hi');
       throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized');
     }
 

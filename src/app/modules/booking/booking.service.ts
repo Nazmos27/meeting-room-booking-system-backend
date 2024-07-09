@@ -35,9 +35,10 @@ const createBookingIntoDB = async (payload: TBooking) => {
 
   //check if the user exists
   const userDataForChecking = {
-    id: payload.user,
+    id: payload?.user,
     email: '',
   };
+  console.log(userDataForChecking);
   const user = await UserModel.isUserExistChecker(userDataForChecking);
   if (!user) throw new AppError(httpStatus.NOT_FOUND, 'User does not exist');
 
