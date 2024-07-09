@@ -30,9 +30,10 @@ const loginUser  = async (payload:TLoginUser) => {
     //generate access token
     const jwtPayload = {
         userEmail : user.email,
-        role : user.role
+        role : user.role,
+        loginTime : new Date()
     }
-
+    console.log(jwtPayload.loginTime);
     const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret as string, { expiresIn : '30d'})
 
     return {

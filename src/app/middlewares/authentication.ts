@@ -21,7 +21,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
       token,
       config.jwt_access_secret as string,
     ) as JwtPayload;
-    const { role, userEmail, iat } = decoded;
+    const { role, userEmail, iat, loginTime } = decoded;
     //check if the user exist using static method
     const userDataForChecking = {
       email: userEmail,
@@ -32,6 +32,17 @@ const auth = (...requiredRoles: TUserRole[]) => {
       throw new AppError(httpStatus.NOT_FOUND, 'This user is not found');
     }
 
+    console.log(loginTime,'logintime');
+    if (
+      loginTime &&
+      (await UserModel.isNewTokenGrantedAfterPassChangeChecker(
+        loginTime,
+        iat as number,
+      ))
+    ) {
+      console.log('hi');
+      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized');
+    }
 
     //check if the user is in the required rolls
     if (requiredRoles && !requiredRoles.includes(role)) {

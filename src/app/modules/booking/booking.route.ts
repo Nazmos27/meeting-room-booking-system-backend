@@ -9,4 +9,6 @@ router.post('/',auth(USER_ROLE.admin,USER_ROLE.user), BookingControllers.createB
 
 router.get('/', auth(USER_ROLE.admin), BookingControllers.getAllBookings)
 
+router.patch('/:id', auth(USER_ROLE.admin), BookingControllers.updateBooking)
+
 export const BookingRoutes = router;

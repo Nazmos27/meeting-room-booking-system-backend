@@ -46,11 +46,25 @@ const createBookingIntoDB = async (payload: TBooking) => {
 };
 
 const getAllBookingsFromDB = async () => {
-  const bookings = await BookingModel.find().populate({path : 'user', select : '-password'}).populate('room').populate('slots')
-  return bookings
-}
+  const bookings = await BookingModel.find()
+    .populate({ path: 'user', select: '-password' })
+    .populate('room')
+    .populate('slots');
+  return bookings;
+};
+
+const updateBookingIntoDB = async (id: string, payload: Partial<TBooking>) => {
+  const booking = await BookingModel.findById(id);
+  if (!booking)
+    throw new AppError(httpStatus.NOT_FOUND, 'Booking does not exist');
+  const updatedBooking = await BookingModel.findByIdAndUpdate(id, payload, {
+    new: true,
+  });
+  return updatedBooking;
+};
 
 export const BookingServices = {
   createBookingIntoDB,
   getAllBookingsFromDB,
+  updateBookingIntoDB,
 };

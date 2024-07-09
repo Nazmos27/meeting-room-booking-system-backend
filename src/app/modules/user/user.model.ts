@@ -55,4 +55,14 @@ userSchema.statics.isPasswordMatchedChecker = async function(plaintextPassword: 
     return await bcrypt.compare(plaintextPassword, hashedPassword)
 }
 
+
+userSchema.statics.isNewTokenGrantedAfterPassChangeChecker = async function (
+    passwordChangedTimestamp: Date,
+    tokenIssuedTimestamp: number,
+  ) {
+    console.log(passwordChangedTimestamp, tokenIssuedTimestamp);
+    const passwordChangedTime =
+      new Date(passwordChangedTimestamp).getTime() / 1000;
+    return passwordChangedTime > tokenIssuedTimestamp;}
+
 export const UserModel = model<TUser, UserModelInterface>('users', userSchema)
