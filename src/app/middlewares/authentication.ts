@@ -53,7 +53,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
     // }
 
 
-    if((await UserModel.isAuthorizedUserChecker(userEmail))){
+    if((await UserModel.isAuthorizedUserChecker(userEmail)) === false){
       throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized');
     }
 

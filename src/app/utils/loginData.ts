@@ -1,28 +1,22 @@
-import { TUserLoginInfo } from "../modules/user/user.interface";
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export class SharedData {
-    private static instance: SharedData;
-    private userLoginData: TUserLoginInfo = {
-        userEmail : '',
-        loginAt : new Date,
-        token : '',
-    };
-  
-    private constructor() {}
-  
-    public static getInstance(): SharedData {
-      if (!SharedData.instance) {
-        SharedData.instance = new SharedData();
-      }
-      return SharedData.instance;
+  private static instance: SharedData;
+  private userLoginData: any = null;
+
+  private constructor() {}
+
+  public static getInstance(): SharedData {
+    if (!SharedData.instance) {
+      SharedData.instance = new SharedData();
     }
-  
-    public setUserLoginData(data: TUserLoginInfo) {
-      this.userLoginData = data;
-    }
-  
-    public getUserLoginData() {
-      return this.userLoginData;
-    }
+    return SharedData.instance;
   }
-  
+
+  public setUserLoginData(data: any) {
+    this.userLoginData = data;
+  }
+
+  public getUserLoginData() {
+    return this.userLoginData;
+  }
+}

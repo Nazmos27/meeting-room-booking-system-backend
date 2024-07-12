@@ -42,7 +42,10 @@ const createBookingIntoDB = async (payload: TBooking) => {
   const user = await UserModel.isUserExistChecker(userDataForChecking);
   if (!user) throw new AppError(httpStatus.NOT_FOUND, 'User does not exist');
 
-  
+  const userEmail = user?.email
+  if((await UserModel.isAuthorizedUserChecker(userEmail)) === false){
+    throw new AppError(httpStatus.UNAUTHORIZED, 'Use your unique User Id to create booking');
+  }
 
   const newBooking = await BookingModel.create(payload);
   return newBooking;
