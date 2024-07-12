@@ -2,6 +2,7 @@ import { Schema, model } from "mongoose";
 import { TUser, TUserLoginInfo, UserModelInterface } from "./user.interface";
 import bcrypt from 'bcrypt'
 import config from "../../config";
+import { SharedData } from "../../utils/loginData";
 
 const userSchema = new Schema<TUser, UserModelInterface>({
     name : {
@@ -64,6 +65,14 @@ userSchema.statics.isUserExistChecker = async function( data : Record<string, un
         return await UserModel.findOne({email: data.email}).select('+password')
     }
     
+}
+
+userSchema.statics.isAuthorizedUserChecker = async function( email : string){
+    const sharedData = SharedData.getInstance();
+const userLoginData = sharedData.getUserLoginData();
+if(userLoginData.userEmail !== email){
+    return false;
+}
 }
 
 userSchema.statics.isPasswordMatchedChecker = async function(plaintextPassword: string, hashedPassword : string) {

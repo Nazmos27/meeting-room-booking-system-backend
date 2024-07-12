@@ -34,17 +34,26 @@ const auth = (...requiredRoles: TUserRole[]) => {
     }
 
     // console.log(loginTime,'logintime', iat, 'iat');
-    console.log(user.email);
+    
     const userLoginData = await UserLoginModel.findOne({userEmail : user.email})
     const loginTime = userLoginData?.loginAt
     console.log(loginTime,'authentication',iat);
-    if (
-      loginTime &&
-      (await UserModel.isNewTokenGrantedAfterPassChangeChecker(
-        loginTime,
-        iat as number,
-      ))
-    ) {
+
+    if (!userLoginData || userLoginData.token !== token) {
+      throw new AppError(httpStatus.UNAUTHORIZED, 'Token is invalid');
+    }
+    // if (
+    //   loginTime &&
+    //   (await UserModel.isNewTokenGrantedAfterPassChangeChecker(
+    //     loginTime,
+    //     iat as number,
+    //   ))
+    // ) {
+    //   throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized');
+    // }
+
+
+    if((await UserModel.isAuthorizedUserChecker(userEmail))){
       throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized');
     }
 

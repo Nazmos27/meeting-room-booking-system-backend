@@ -24,6 +24,7 @@ export interface UserModelInterface extends Model<TUser> {
         passwordChangedTimestamp: Date,
         tokenIssuedTimestamp: number,
       ): Promise<boolean>;
+    isAuthorizedUserChecker( email : string) : Promise<boolean>
 }
 
 export type TUserRole = keyof typeof USER_ROLE;
