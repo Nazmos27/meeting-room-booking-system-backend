@@ -26,7 +26,7 @@ const createBookingIntoDB = async (payload: TBooking) => {
     for (const item of slotArray) {
       const slotId = new mongoose.Types.ObjectId(item);
       const slot = await SlotModel.isSlotExistsChecker(slotId);
-      const slotBooked = await SlotModel.isSlotBookedChecker(slot)
+      const slotBooked = await SlotModel.isSlotBookedChecker(slot);
       if (!slot || slotBooked) {
         throw new AppError(httpStatus.NOT_FOUND, 'Slot does not exist');
       }
@@ -35,14 +35,17 @@ const createBookingIntoDB = async (payload: TBooking) => {
   };
 
   const success = await checkSlots(slotArray);
-  if(success){
-    for(const item of slotArray){
+  if (success) {
+    for (const item of slotArray) {
       const slotId = new mongoose.Types.ObjectId(item);
       const slot = await SlotModel.isSlotExistsChecker(slotId);
-      await SlotModel.findByIdAndUpdate({_id : slotId}, {...payload, isBooked : !(slot.isBooked)}, {new : true})
+      await SlotModel.findByIdAndUpdate(
+        { _id: slotId },
+        { ...payload, isBooked: !slot.isBooked },
+        { new: true },
+      );
     }
   }
-  
 
   //check if the user exists
   const userDataForChecking = {
@@ -61,9 +64,9 @@ const createBookingIntoDB = async (payload: TBooking) => {
   //   );
   // }
 
-  const totalAmount = room.pricePerSlot * slotArray.length
+  const totalAmount = room.pricePerSlot * slotArray.length;
 
-  const finalData = {...payload, totalAmount}
+  const finalData = { ...payload, totalAmount };
 
   const newBooking = await BookingModel.create(finalData);
 
@@ -84,7 +87,7 @@ const getMyBookingsFromDB = async (token: string) => {
     config.jwt_access_secret as string,
   ) as JwtPayload;
 
-  const {  userEmail } = decoded;
+  const { userEmail } = decoded;
 
   const userDataForChecking = {
     email: userEmail,
@@ -94,8 +97,8 @@ const getMyBookingsFromDB = async (token: string) => {
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user is not found');
   }
-  const id = user._id
-  const bookings = await BookingModel.find({ user : id },{user : false})
+  const id = user._id;
+  const bookings = await BookingModel.find({ user: id }, { user: false })
     .populate('room')
     .populate('slots');
   return bookings;
@@ -110,10 +113,24 @@ const updateBookingIntoDB = async (id: string, payload: Partial<TBooking>) => {
   });
   return updatedBooking;
 };
+const deleteBookingFromDB = async (id: string) => {
+  const booking = await BookingModel.findById(id);
+  if (!booking)
+    throw new AppError(httpStatus.NOT_FOUND, 'Booking does not exist');
+  const updatedBooking = await BookingModel.findByIdAndUpdate(
+    id,
+    { isDeleted: true },
+    {
+      new: true,
+    },
+  );
+  return updatedBooking;
+};
 
 export const BookingServices = {
   createBookingIntoDB,
   getAllBookingsFromDB,
   updateBookingIntoDB,
   getMyBookingsFromDB,
+  deleteBookingFromDB,
 };

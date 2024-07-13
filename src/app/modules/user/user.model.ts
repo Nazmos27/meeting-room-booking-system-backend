@@ -47,13 +47,13 @@ const userLoginSchema = new Schema<TUserLoginInfo>({
   },
 });
 
-userSchema.pre('save',async function(next){
-  const checker = await UserModel.find({email : this.email})
-  if(checker.length > 0){
-    throw new Error('User already exists with this email')
+userSchema.pre('save', async function (next) {
+  const checker = await UserModel.find({ email: this.email });
+  if (checker.length > 0) {
+    throw new Error('User already exists with this email');
   }
-  next()
-})
+  next();
+});
 
 userSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(
@@ -94,7 +94,6 @@ userSchema.statics.isPasswordMatchedChecker = async function (
 ) {
   return await bcrypt.compare(plaintextPassword, hashedPassword);
 };
-
 
 export const UserModel = model<TUser, UserModelInterface>('users', userSchema);
 

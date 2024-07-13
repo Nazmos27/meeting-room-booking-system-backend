@@ -4,7 +4,7 @@ import { SlotModelInterface, TSlot } from './slot.interface';
 const slotSchema = new Schema<TSlot, SlotModelInterface>({
   room: {
     type: Schema.Types.ObjectId,
-    required : true,
+    required: true,
     ref: 'rooms',
   },
   date: {
@@ -29,19 +29,14 @@ slotSchema.pre('save', async function (next) {
   next();
 });
 
-
 slotSchema.statics.isSlotExistsChecker = async function (
   id: Schema.Types.ObjectId,
 ) {
-  return await SlotModel.findOne({ _id:id });
+  return await SlotModel.findOne({ _id: id });
 };
 
-slotSchema.statics.isSlotBookedChecker = async function (
-  slotData : TSlot
-) {
-  return slotData?.isBooked
+slotSchema.statics.isSlotBookedChecker = async function (slotData: TSlot) {
+  return slotData?.isBooked;
 };
-
-
 
 export const SlotModel = model<TSlot, SlotModelInterface>('slots', slotSchema);

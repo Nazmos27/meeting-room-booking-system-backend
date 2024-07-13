@@ -13,8 +13,8 @@ const timeStringSchema = z.string().refine(
 export const createSlotValidationSchema = z.object({
   body: z
     .object({
-      room : z.string(),
-      date : z.string(),
+      room: z.string(),
+      date: z.string(),
       startTime: timeStringSchema, // HH: MM   00-23: 00-59
       endTime: timeStringSchema,
     })
@@ -33,5 +33,3 @@ export const createSlotValidationSchema = z.object({
       },
     ),
 });
-
-

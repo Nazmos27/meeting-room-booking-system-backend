@@ -24,7 +24,7 @@ const createSlotIntoDB = async (payload: TSlot) => {
   const endDate = new Date(0, 0, 0, endHours, endMinutes);
 
   // Calculate the difference in milliseconds
-  let difference  = endDate.getTime() - startDate.getTime();
+  let difference = endDate.getTime() - startDate.getTime();
 
   // If the difference is negative, it means the end time is past midnight
   if (difference < 0) {
@@ -82,13 +82,15 @@ const createSlotIntoDB = async (payload: TSlot) => {
 
 const getAvailableSlots = async (query?: Record<string, unknown>) => {
   if (!query) {
-    const result = await SlotModel.find({isBooked : false}).populate('room');
+    const result = await SlotModel.find({ isBooked: false }).populate('room');
     return result;
   } else {
     const { date, roomId } = query;
-    const result = await SlotModel.find({ date, room: roomId, isBooked : false }).populate(
-      'room',
-    );
+    const result = await SlotModel.find({
+      date,
+      room: roomId,
+      isBooked: false,
+    }).populate('room');
     return result;
   }
 };

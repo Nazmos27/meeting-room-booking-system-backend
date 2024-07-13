@@ -26,7 +26,7 @@ export interface UserModelInterface extends Model<TUser> {
     plaintextPassword: string,
     hashedPassword: string,
   ): Promise<boolean>;
-  
+
   isAuthorizedUserChecker(email: string): Promise<boolean>;
 }
 

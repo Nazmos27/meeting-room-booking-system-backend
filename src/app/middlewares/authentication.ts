@@ -7,7 +7,6 @@ import httpStatus from 'http-status';
 import config from '../config';
 import { UserLoginModel, UserModel } from '../modules/user/user.model';
 
-
 const auth = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization?.split(' ')[1];
@@ -25,20 +24,21 @@ const auth = (...requiredRoles: TUserRole[]) => {
     //check if the user exist using static method
     const userDataForChecking = {
       email: userEmail,
-      id: ''
-    }
+      id: '',
+    };
     const user = await UserModel.isUserExistChecker(userDataForChecking);
     if (!user) {
       throw new AppError(httpStatus.NOT_FOUND, 'This user is not found');
     }
 
-    
-    const userLoginData = await UserLoginModel.findOne({userEmail : user.email})
+    const userLoginData = await UserLoginModel.findOne({
+      userEmail: user.email,
+    });
 
     if (!userLoginData || userLoginData.token !== token) {
       throw new AppError(httpStatus.UNAUTHORIZED, 'Token is invalid');
     }
-    
+
     //check if someone trying to access data with other person's token
     // if((await UserModel.isAuthorizedUserChecker(userEmail)) === false){
     //   throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized');
