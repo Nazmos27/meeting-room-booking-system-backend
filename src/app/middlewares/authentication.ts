@@ -10,7 +10,8 @@ import { UserLoginModel, UserModel } from '../modules/user/user.model';
 
 const auth = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization;
+    const token = req.headers.authorization?.split(' ')[1];
+    console.log(token);
     //check if the token is sent from the client
     if (!token) {
       throw new AppError(httpStatus.UNAUTHORIZED, 'Token not found');
@@ -21,7 +22,6 @@ const auth = (...requiredRoles: TUserRole[]) => {
       token,
       config.jwt_access_secret as string,
     ) as JwtPayload;
-    console.log("decoded", decoded);
     const { role, userEmail, iat } = decoded;
     //check if the user exist using static method
     const userDataForChecking = {
@@ -42,20 +42,11 @@ const auth = (...requiredRoles: TUserRole[]) => {
     if (!userLoginData || userLoginData.token !== token) {
       throw new AppError(httpStatus.UNAUTHORIZED, 'Token is invalid');
     }
-    // if (
-    //   loginTime &&
-    //   (await UserModel.isNewTokenGrantedAfterPassChangeChecker(
-    //     loginTime,
-    //     iat as number,
-    //   ))
-    // ) {
+    
+    //check if someone trying to access data with other person's token
+    // if((await UserModel.isAuthorizedUserChecker(userEmail)) === false){
     //   throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized');
     // }
-
-
-    if((await UserModel.isAuthorizedUserChecker(userEmail)) === false){
-      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized');
-    }
 
     //check if the user is in the required rolls
     if (requiredRoles && !requiredRoles.includes(role)) {

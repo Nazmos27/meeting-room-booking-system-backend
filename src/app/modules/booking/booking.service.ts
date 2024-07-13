@@ -1,3 +1,4 @@
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import httpStatus from 'http-status';
 import { RoomModel } from '../room/room.model';
 import { TBooking } from './booking.interface';
@@ -6,6 +7,7 @@ import AppError from '../../errors/AppError';
 import { SlotModel } from '../slot/slot.model';
 import { UserModel } from '../user/user.model';
 import mongoose, { Types } from 'mongoose';
+import config from '../../config';
 
 const createBookingIntoDB = async (payload: TBooking) => {
   //check if that room exists
@@ -38,13 +40,16 @@ const createBookingIntoDB = async (payload: TBooking) => {
     id: payload?.user,
     email: '',
   };
-  console.log(userDataForChecking);
+
   const user = await UserModel.isUserExistChecker(userDataForChecking);
   if (!user) throw new AppError(httpStatus.NOT_FOUND, 'User does not exist');
 
-  const userEmail = user?.email
-  if((await UserModel.isAuthorizedUserChecker(userEmail)) === false){
-    throw new AppError(httpStatus.UNAUTHORIZED, 'Use your unique User Id to create booking');
+  const userEmail = user?.email;
+  if ((await UserModel.isAuthorizedUserChecker(userEmail)) === false) {
+    throw new AppError(
+      httpStatus.UNAUTHORIZED,
+      'Use your unique User Id to create booking',
+    );
   }
 
   const newBooking = await BookingModel.create(payload);
@@ -54,6 +59,29 @@ const createBookingIntoDB = async (payload: TBooking) => {
 const getAllBookingsFromDB = async () => {
   const bookings = await BookingModel.find()
     .populate({ path: 'user', select: '-password' })
+    .populate('room')
+    .populate('slots');
+  return bookings;
+};
+
+const getMyBookingsFromDB = async (token: string) => {
+  const decoded = jwt.verify(
+    token,
+    config.jwt_access_secret as string,
+  ) as JwtPayload;
+
+  const {  userEmail } = decoded;
+
+  const userDataForChecking = {
+    email: userEmail,
+    id: '',
+  };
+  const user = await UserModel.isUserExistChecker(userDataForChecking);
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This user is not found');
+  }
+  const id = user._id
+  const bookings = await BookingModel.find({ user : id },{user : false})
     .populate('room')
     .populate('slots');
   return bookings;
@@ -73,4 +101,5 @@ export const BookingServices = {
   createBookingIntoDB,
   getAllBookingsFromDB,
   updateBookingIntoDB,
+  getMyBookingsFromDB,
 };

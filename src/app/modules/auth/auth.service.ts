@@ -6,7 +6,7 @@ import config from "../../config";
 import { TUser } from "../user/user.interface";
 import { UserModel } from "../user/user.model";
 import { UserServices } from "../user/user.service";
-import { loggedInUserInfo, SharedData } from "../../utils/loginData";
+import {  SharedData } from "../../utils/loginData";
 
 const signUpUser = async (payload : TUser) => {
     const newUser = await UserModel.create(payload);
@@ -15,7 +15,7 @@ const signUpUser = async (payload : TUser) => {
         loginAt : new Date(),
         token : 'adfa'
     }
-    const loggedData = await UserServices.createLoginInfoIntoDB(loggedInfo)
+     await UserServices.createLoginInfoIntoDB(loggedInfo)
     return newUser;
 }
 
@@ -35,7 +35,6 @@ const loginUser  = async (payload:TLoginUser) => {
     }
 
     //generate access token
-    console.log(payload.email,'from payload.email');
     const jwtPayload = {
         userEmail : user.email,
         role : user.role,
@@ -48,9 +47,7 @@ const loginUser  = async (payload:TLoginUser) => {
         loginAt : new Date(),
         token : accessToken
     }
-    console.log(userLoginData);
-
-    const loggedOperation = await UserServices.updateLoginInfo(userLoginData)
+    await UserServices.updateLoginInfo(userLoginData)
 
     const sharedData = SharedData.getInstance();
   sharedData.setUserLoginData(userLoginData);
