@@ -11,7 +11,6 @@ import { UserLoginModel, UserModel } from '../modules/user/user.model';
 const auth = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization?.split(' ')[1];
-    console.log(token);
     //check if the token is sent from the client
     if (!token) {
       throw new AppError(httpStatus.UNAUTHORIZED, 'Token not found');
@@ -22,7 +21,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
       token,
       config.jwt_access_secret as string,
     ) as JwtPayload;
-    const { role, userEmail, iat } = decoded;
+    const { role, userEmail } = decoded;
     //check if the user exist using static method
     const userDataForChecking = {
       email: userEmail,
@@ -33,11 +32,8 @@ const auth = (...requiredRoles: TUserRole[]) => {
       throw new AppError(httpStatus.NOT_FOUND, 'This user is not found');
     }
 
-    // console.log(loginTime,'logintime', iat, 'iat');
     
     const userLoginData = await UserLoginModel.findOne({userEmail : user.email})
-    const loginTime = userLoginData?.loginAt
-    console.log(loginTime,'authentication',iat);
 
     if (!userLoginData || userLoginData.token !== token) {
       throw new AppError(httpStatus.UNAUTHORIZED, 'Token is invalid');

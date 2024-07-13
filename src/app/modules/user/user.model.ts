@@ -86,15 +86,6 @@ userSchema.statics.isPasswordMatchedChecker = async function (
   return await bcrypt.compare(plaintextPassword, hashedPassword);
 };
 
-userSchema.statics.isNewTokenGrantedAfterPassChangeChecker = async function (
-  passwordChangedTimestamp: Date,
-  tokenIssuedTimestamp: number,
-) {
-  const passwordChangedTime =
-    new Date(passwordChangedTimestamp).getTime() / 1000;
-  console.log(Math.floor(passwordChangedTime), tokenIssuedTimestamp);
-  return passwordChangedTime === tokenIssuedTimestamp;
-};
 
 export const UserModel = model<TUser, UserModelInterface>('users', userSchema);
 

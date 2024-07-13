@@ -24,7 +24,7 @@ const createSlotIntoDB = async (payload: TSlot) => {
   const endDate = new Date(0, 0, 0, endHours, endMinutes);
 
   // Calculate the difference in milliseconds
-  let difference = endDate - startDate;
+  let difference  = endDate.getTime() - startDate.getTime();
 
   // If the difference is negative, it means the end time is past midnight
   if (difference < 0) {

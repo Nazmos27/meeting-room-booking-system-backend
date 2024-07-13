@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import { TUser, TUserLoginInfo } from './user.interface';
 import { UserLoginModel, UserModel } from './user.model';
 
