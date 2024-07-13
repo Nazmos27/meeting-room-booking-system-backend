@@ -82,11 +82,11 @@ const createSlotIntoDB = async (payload: TSlot) => {
 
 const getAvailableSlots = async (query?: Record<string, unknown>) => {
   if (!query) {
-    const result = await SlotModel.find().populate('room');
+    const result = await SlotModel.find({isBooked : false}).populate('room');
     return result;
   } else {
     const { date, roomId } = query;
-    const result = await SlotModel.find({ date, room: roomId }).populate(
+    const result = await SlotModel.find({ date, room: roomId, isBooked : false }).populate(
       'room',
     );
     return result;

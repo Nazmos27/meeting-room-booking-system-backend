@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Model, Types } from "mongoose"
 
 export type TSlot = {
@@ -10,4 +11,5 @@ export type TSlot = {
 
 export interface SlotModelInterface extends Model<TSlot> {
     isSlotExistsChecker( id : Types.ObjectId) : Promise<TSlot>
+    isSlotBookedChecker( slotData : TSlot) : Promise<boolean>
 }

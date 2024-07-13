@@ -2,10 +2,12 @@ import { Router } from "express";
 import { RoomControllers } from "./room.controller";
 import auth from "../../middlewares/authentication";
 import { USER_ROLE } from "../user/user.constant";
+import validateRequest from "../../middlewares/validateRequest";
+import { roomValidationSchema } from "./room.validation";
 
 const router = Router()
 
-router.post('/', auth(USER_ROLE.admin),RoomControllers.createRoom)
+router.post('/',validateRequest(roomValidationSchema) , auth(USER_ROLE.admin),RoomControllers.createRoom)
 
 router.get('/',RoomControllers.getAllRooms)
 

@@ -26,14 +26,23 @@ const createBookingIntoDB = async (payload: TBooking) => {
     for (const item of slotArray) {
       const slotId = new mongoose.Types.ObjectId(item);
       const slot = await SlotModel.isSlotExistsChecker(slotId);
-      if (!slot) {
+      const slotBooked = await SlotModel.isSlotBookedChecker(slot)
+      if (!slot || slotBooked) {
         throw new AppError(httpStatus.NOT_FOUND, 'Slot does not exist');
       }
     }
-    return null;
+    return true;
   };
 
-  await checkSlots(slotArray);
+  const success = await checkSlots(slotArray);
+  if(success){
+    for(const item of slotArray){
+      const slotId = new mongoose.Types.ObjectId(item);
+      const slot = await SlotModel.isSlotExistsChecker(slotId);
+      await SlotModel.findByIdAndUpdate({_id : slotId}, {...payload, isBooked : !(slot.isBooked)}, {new : true})
+    }
+  }
+  
 
   //check if the user exists
   const userDataForChecking = {
@@ -44,15 +53,20 @@ const createBookingIntoDB = async (payload: TBooking) => {
   const user = await UserModel.isUserExistChecker(userDataForChecking);
   if (!user) throw new AppError(httpStatus.NOT_FOUND, 'User does not exist');
 
-  const userEmail = user?.email;
-  if ((await UserModel.isAuthorizedUserChecker(userEmail)) === false) {
-    throw new AppError(
-      httpStatus.UNAUTHORIZED,
-      'Use your unique User Id to create booking',
-    );
-  }
+  // const userEmail = user?.email;
+  // if ((await UserModel.isAuthorizedUserChecker(userEmail)) === false) {
+  //   throw new AppError(
+  //     httpStatus.UNAUTHORIZED,
+  //     'Use your unique User Id to create booking',
+  //   );
+  // }
 
-  const newBooking = await BookingModel.create(payload);
+  const totalAmount = room.pricePerSlot * slotArray.length
+
+  const finalData = {...payload, totalAmount}
+
+  const newBooking = await BookingModel.create(finalData);
+
   return newBooking;
 };
 

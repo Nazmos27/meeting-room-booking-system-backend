@@ -12,6 +12,7 @@ const userSchema = new Schema<TUser, UserModelInterface>({
   email: {
     type: String,
     required: true,
+    unique: true,
   },
   password: {
     type: String,
@@ -45,6 +46,14 @@ const userLoginSchema = new Schema<TUserLoginInfo>({
     required: true,
   },
 });
+
+userSchema.pre('save',async function(next){
+  const checker = await UserModel.find({email : this.email})
+  if(checker.length > 0){
+    throw new Error('User already exists with this email')
+  }
+  next()
+})
 
 userSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(

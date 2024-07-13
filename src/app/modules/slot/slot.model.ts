@@ -29,15 +29,17 @@ slotSchema.pre('save', async function (next) {
   next();
 });
 
-slotSchema.pre('find', async function (next) {
-    this.find({ isBooked: { $ne: true } });
-    next();
-  });
 
 slotSchema.statics.isSlotExistsChecker = async function (
   id: Schema.Types.ObjectId,
 ) {
   return await SlotModel.findOne({ _id:id });
+};
+
+slotSchema.statics.isSlotBookedChecker = async function (
+  slotData : TSlot
+) {
+  return slotData?.isBooked
 };
 
 

@@ -1,4 +1,4 @@
-import { model, Schema, Types } from "mongoose";
+import { model, Schema} from "mongoose";
 import { TBooking } from "./booking.interface";
 
 const bookingSchema = new Schema<TBooking>({
@@ -23,18 +23,21 @@ const bookingSchema = new Schema<TBooking>({
     },
     totalAmount : {
         type : Number,
-        required : true
     },
     isConfirmed : {
         type : String,
         enum : ['confirmed', 'unconfirmed'],
-        required : true
     },
     isDeleted : {
         type : Boolean,
-        required : true
     }
 })
+
+bookingSchema.pre('save', async function (next) {
+    this.isConfirmed = 'unconfirmed';
+    this.isDeleted = false;
+    next();
+  });
 
 bookingSchema.post('save',async function(doc,next){
     await doc.populate([
