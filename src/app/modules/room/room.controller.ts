@@ -6,7 +6,7 @@ const createRoom = catchAsync(async (req, res) => {
   res.status(200).json({
     success: true,
     statusCode: 200,
-    message: 'Room created successfully',
+    message: 'Room added successfully',
     data: result,
   });
 });

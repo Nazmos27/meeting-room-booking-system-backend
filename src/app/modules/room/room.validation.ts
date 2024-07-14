@@ -20,8 +20,5 @@ export const roomValidationSchema = z.object({
     amenities: z
       .array(z.string())
       .nonempty({ message: 'At least one amenity is required' }),
-    isDeleted: z.boolean().refine((val) => val === true || val === false, {
-      message: 'isDeleted must be a boolean',
-    }),
   }),
 });

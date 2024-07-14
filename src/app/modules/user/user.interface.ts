@@ -9,8 +9,9 @@ export type TUser = {
   email: string;
   password: string;
   phone: string;
-  address: string;
   role: 'user' | 'admin';
+  address: string;
+ 
 };
 
 export type TUserLoginInfo = {

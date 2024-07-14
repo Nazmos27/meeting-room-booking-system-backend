@@ -11,7 +11,7 @@ export const userValidationSchema = z.object({
       }),
     phone: z
       .string()
-      .min(11, { message: 'Number should be minimum 11 digits' }),
+      .min(1, { message: 'Number should be minimum 11 digits' }),
     address: z.string().min(1, { message: 'Address is required' }),
     role: z.enum(['user', 'admin'], {
       message: "Role must be either 'user' or 'admin'",

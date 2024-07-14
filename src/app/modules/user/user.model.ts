@@ -22,14 +22,15 @@ const userSchema = new Schema<TUser, UserModelInterface>({
     type: String,
     required: true,
   },
-  address: {
-    type: String,
-    required: true,
-  },
   role: {
     type: String,
     enum: ['user', 'admin'],
   },
+  address: {
+    type: String,
+    required: true,
+  },
+  
 });
 
 const userLoginSchema = new Schema<TUserLoginInfo>({
@@ -63,9 +64,16 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-userSchema.post('save', function (doc, next) {
-  doc.password = '';
-  next();
+// userSchema.post('save', function (doc, next) {
+//   doc.password = undefined;
+//   next();
+// });
+
+userSchema.set('toJSON', {
+  transform: (doc, ret) => {
+    delete ret.password;
+    return ret;
+  },
 });
 
 userSchema.statics.isUserExistChecker = async function (
