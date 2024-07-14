@@ -8,7 +8,7 @@ const handleDuplicateError = (err: any): TGenericErrorResponse => {
   const match = err.message.match(/"([^"]*)"/);
   const extractedMsg = match && match[1];
 
-  const errorSources: TErrorSources = [
+  const errorMessages: TErrorSources = [
     {
       path: '',
       message: `${extractedMsg} already exists`,
@@ -18,7 +18,7 @@ const handleDuplicateError = (err: any): TGenericErrorResponse => {
   return {
     statusCode,
     message: 'Duplicate key:value error',
-    errorSources,
+    errorMessages,
   };
 };
 

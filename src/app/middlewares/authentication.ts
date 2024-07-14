@@ -6,6 +6,7 @@ import AppError from '../errors/AppError';
 import httpStatus from 'http-status';
 import config from '../config';
 import { UserLoginModel, UserModel } from '../modules/user/user.model';
+import RouteError from '../errors/RouteError';
 
 const auth = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -46,7 +47,10 @@ const auth = (...requiredRoles: TUserRole[]) => {
 
     //check if the user is in the required rolls
     if (requiredRoles && !requiredRoles.includes(role)) {
-      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized');
+      throw new RouteError(
+        httpStatus.UNAUTHORIZED,
+        'You have no access to this route',
+      );
     }
 
     req.user = decoded as JwtPayload;
