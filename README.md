@@ -75,7 +75,7 @@ Overall, the Meeting Room Booking System provides a comprehensive solution for m
 ### Usage
 * Run this command to start the application.
 ```bash
-  npm start:dev
+  npm run start:dev
 ```
  
 * Connect to the API using Postman on port 5000.
