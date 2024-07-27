@@ -93,6 +93,7 @@ To run this project, you will need to add the following environment variables to
 
 
 ## API Reference
+If you use postman to test the test cases, download [this](https://github.com/Nazmos27/meeting-room-booking-system-backend/blob/main/Test%20cases%20of%20Meeting%20Room%20Booking%20System%20Backend.postman_collection.json) file & import it on postman to test APIs easily! Otherwise try following APIs to test functionalities.
 
 1. **User Sign Up**
 -   _*Route:*_ `/api/auth/signup` (POST)
