@@ -4,34 +4,42 @@ import bcrypt from 'bcrypt';
 import config from '../../config';
 import { SharedData } from '../../utils/loginData';
 
-const userSchema = new Schema<TUser, UserModelInterface>({
-  name: {
-    type: String,
-    required: true,
+const userSchema = new Schema<TUser, UserModelInterface>(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+      select: 0,
+    },
+    phone: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      default: 'user',
+      enum: ['user', 'admin'],
+    },
+    address: {
+      type: String,
+      required: true,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  phone: {
-    type: String,
-    required: true,
-  },
-  role: {
-    type: String,
-    enum: ['user', 'admin'],
-  },
-  address: {
-    type: String,
-    required: true,
-  },
-  
-});
+  { timestamps: true },
+);
 
 const userLoginSchema = new Schema<TUserLoginInfo>({
   userEmail: {
@@ -48,13 +56,13 @@ const userLoginSchema = new Schema<TUserLoginInfo>({
   },
 });
 
-userSchema.pre('save', async function (next) {
-  const checker = await UserModel.find({ email: this.email });
-  if (checker.length > 0) {
-    throw new Error('User already exists with this email');
-  }
-  next();
-});
+// userSchema.pre('save', async function (next) {
+//   const checker = await UserModel.find({ email: this.email });
+//   if (checker.length > 0) {
+//     throw new Error('User already exists with this email');
+//   }
+//   next();
+// });
 
 userSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(

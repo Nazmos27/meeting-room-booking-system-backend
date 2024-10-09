@@ -5,12 +5,14 @@ import { USER_ROLE } from './user.constant';
 export type TUser = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [x: string]: any;
+  _id:string;
   name: string;
   email: string;
   password: string;
   phone: string;
   role: 'user' | 'admin';
   address: string;
+  isDeleted : boolean;
  
 };
 
