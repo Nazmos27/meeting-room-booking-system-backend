@@ -356,5 +356,5 @@ Email : nazmos789@gmail.com
 LinkedIn : https://www.linkedin.com/in/nsakib27/
 
 To know more about me and my works, visit my github profile.
-If you have any questions, feel free to mail me!
+If you have any questions or feedback, feel free to mail me!
 Thank you for your valuable time.💌
