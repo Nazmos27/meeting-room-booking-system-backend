@@ -8,6 +8,7 @@ import { SlotModel } from '../slot/slot.model';
 import { UserModel } from '../user/user.model';
 import mongoose, { Types } from 'mongoose';
 import config from '../../config';
+import QueryBuilder from '../../../builder/QueryBuilder';
 
 const createBookingIntoDB = async (payload: TBooking) => {
   //check if that room exists
@@ -34,18 +35,22 @@ const createBookingIntoDB = async (payload: TBooking) => {
     return true;
   };
 
-  const success = await checkSlots(slotArray);
-  if (success) {
-    for (const item of slotArray) {
-      const slotId = new mongoose.Types.ObjectId(item);
-      const slot = await SlotModel.isSlotExistsChecker(slotId);
-      await SlotModel.findByIdAndUpdate(
-        { _id: slotId },
-        { ...payload, isBooked: !slot.isBooked },
-        { new: true },
-      );
-    }
-  }
+  await checkSlots(slotArray);
+  await SlotModel.updateMany({ _id: { $in: payload.slots } }, { isBooked: true });
+  // if (success) {
+  //   for (const item of slotArray) {
+  //     const slotId = new mongoose.Types.ObjectId(item);
+  //     const slot = await SlotModel.isSlotExistsChecker(slotId);
+  //     await SlotModel.findByIdAndUpdate(
+  //       { _id: slotId },
+  //       { ...payload, isBooked: !slot.isBooked },
+  //       { new: true },
+  //     );
+  //   }
+  // }
+   // Mark slots as booked
+   //await SlotModel.updateMany({ _id: { $in: slots } }, { isBooked: true });
+   //this command also update slots that has been booked
 
   //check if the user exists
   const userDataForChecking = {
@@ -73,13 +78,30 @@ const createBookingIntoDB = async (payload: TBooking) => {
   return newBooking;
 };
 
-const getAllBookingsFromDB = async () => {
-  const bookings = await BookingModel.find()
+const getAllBookingsFromDB = async (query: Record<string, unknown>) => {
+  const allBookingsQuery = new QueryBuilder(
+    BookingModel.find({ isDeleted: false })
     .populate({ path: 'user', select: '-password' })
     .populate('room')
-    .populate('slots');
-  return bookings;
+    .populate('slots'),
+    query,
+  )
+    .search(['date'])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const meta = await allBookingsQuery.countTotal();
+  const result = await allBookingsQuery.modelQuery;
+  return {
+    meta,
+    result,
+  };
 };
+
+
+
 
 const getMyBookingsFromDB = async (token: string) => {
   const decoded = jwt.verify(

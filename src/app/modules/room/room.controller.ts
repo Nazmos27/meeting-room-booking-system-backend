@@ -12,8 +12,8 @@ const createRoom = catchAsync(async (req, res) => {
 });
 
 const getAllRooms = catchAsync(async (req, res) => {
-  const result = await RoomServices.getAllRoomsFromDB();
-  if (result.length > 0) {
+  const result = await RoomServices.getAllRoomsFromDB(req.query);
+  if (result.result.length > 0) {
     res.status(200).json({
       success: true,
       statusCode: 200,

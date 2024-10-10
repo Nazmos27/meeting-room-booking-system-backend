@@ -1,43 +1,68 @@
 import { model, Schema } from 'mongoose';
 import { TBooking } from './booking.interface';
 
-const bookingSchema = new Schema<TBooking>({
-  date: {
-    type: String,
-    required: true,
+const bookingSchema = new Schema<TBooking>(
+  {
+    date: {
+      type: String,
+      required: true,
+    },
+    slots: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'slots',
+        required: true,
+      },
+    ],
+    room: {
+      type: Schema.Types.ObjectId,
+      ref: 'rooms',
+      required: true,
+    },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'users',
+      required: true,
+    },
+    totalAmount: {
+      type: Number,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    paymentMethod: {
+      type: String,
+      required: true,
+    },
+    paymentStatus: {
+      type: String,
+      enum: ['Pending', 'Paid'],
+    },
+    tnxId: {
+      type: String,
+      required: true,
+    },
+    isConfirmed: {
+      type: String,
+      enum: ['unconfirmed', 'confirmed'],
+      default: 'unconfirmed',
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
-  slots: {
-    type: [Schema.Types.ObjectId],
-    required: true,
-    ref: 'slots',
+  {
+    timestamps: true,
   },
-  room: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: 'rooms',
-  },
-  user: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: 'users',
-  },
-  totalAmount: {
-    type: Number,
-  },
-  isConfirmed: {
-    type: String,
-    enum: ['confirmed', 'unconfirmed'],
-  },
-  isDeleted: {
-    type: Boolean,
-  },
-});
+);
 
-bookingSchema.pre('save', async function (next) {
-  this.isConfirmed = 'unconfirmed';
-  this.isDeleted = false;
-  next();
-});
+// bookingSchema.pre('save', async function (next) {
+//   this.isConfirmed = 'unconfirmed';
+//   this.isDeleted = false;
+//   next();
+// });
 
 bookingSchema.post('save', async function (doc, next) {
   await doc.populate([
