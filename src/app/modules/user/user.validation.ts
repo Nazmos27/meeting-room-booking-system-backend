@@ -15,7 +15,7 @@ export const userValidationSchema = z.object({
     address: z.string().min(1, { message: 'Address is required' }),
     role: z.enum(['user', 'admin'], {
       message: "Role must be either 'user' or 'admin'",
-    }),
+    }).optional(),
   }),
 });
 
