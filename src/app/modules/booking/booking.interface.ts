@@ -1,19 +1,18 @@
-import { Types } from 'mongoose';
 import { TUser } from '../user/user.interface';
 
 export type TBooking = {
   date: string;
-  slots: Types.ObjectId[];
-  room: Types.ObjectId;
-  user: Types.ObjectId;
-  email : string,
+  slots: string[];
+  room: string;
+  user: string;
+  email: string;
   paymentMethod: string;
   paymentStatus: 'Pending' | 'Paid';
-  tnxId?: string;
-  totalAmount?: number;
-  isConfirmed?: 'confirmed' | 'unconfirmed';
-  isDeleted?: boolean;
-};
+  txnId?: string;
+  totalAmount: number;
+  isConfirmed: 'unconfirmed' | 'confirmed';
+  isDeleted: boolean;
+}
 
 export type TPaymentData = {
   date: string;

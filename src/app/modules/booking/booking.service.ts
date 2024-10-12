@@ -9,6 +9,8 @@ import { UserModel } from '../user/user.model';
 import mongoose, { Types } from 'mongoose';
 import config from '../../config';
 import QueryBuilder from '../../../builder/QueryBuilder';
+import { generateTransactionId } from '../../utils/generateTnxId';
+import { initiatePayment } from '../../utils/payment';
 
 const createBookingIntoDB = async (payload: TBooking) => {
   //check if that room exists
@@ -69,13 +71,25 @@ const createBookingIntoDB = async (payload: TBooking) => {
   //   );
   // }
 
-  const totalAmount = room.pricePerSlot * slotArray.length;
+  const transactionId = generateTransactionId(user);
+  await BookingModel.create({
+    ...payload,
+    paymentStatus: 'Pending',
+    txnId: transactionId,
+  });
 
-  const finalData = { ...payload, totalAmount };
+  const bookingData = {
+    transactionId,
+    ...payload,
+    user: user,
+  };
+  const paymentData = await initiatePayment(bookingData);
 
-  const newBooking = await BookingModel.create(finalData);
+  // Mark slots as booked
+  await SlotModel.updateMany({ _id: { $in: payload.slots } }, { isBooked: true });
 
-  return newBooking;
+
+  return paymentData.data;
 };
 
 const getAllBookingsFromDB = async (query: Record<string, unknown>) => {

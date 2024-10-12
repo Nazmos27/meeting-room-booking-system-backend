@@ -39,7 +39,7 @@ const bookingSchema = new Schema<TBooking>(
       type: String,
       enum: ['Pending', 'Paid'],
     },
-    tnxId: {
+    txnId: {
       type: String,
       required: true,
     },

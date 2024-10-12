@@ -22,7 +22,11 @@ const slotSchema = new Schema<TSlot, SlotModelInterface>({
   isBooked: {
     type: Boolean,
   },
-});
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
+},{timestamps : true});
 
 slotSchema.pre('save', async function (next) {
   this.isBooked = false;
