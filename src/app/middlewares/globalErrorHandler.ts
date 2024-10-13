@@ -42,7 +42,7 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
     errorMessages = simplifiedError?.errorMessages;
-  }else if(err instanceof RouteError){
+  } else if (err instanceof RouteError) {
     return res.status(err.statusCode).json({
       success: err.success,
       statusCode: err.statusCode,

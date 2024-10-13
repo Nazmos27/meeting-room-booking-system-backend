@@ -6,7 +6,6 @@ import { updateUserValidationSchema } from './user.validation';
 
 const router = express.Router();
 
-
 router.patch(
   '/update-user/:userId',
   auth('admin'),

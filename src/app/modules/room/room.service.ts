@@ -7,7 +7,6 @@ const createRoomIntoDB = async (payload: TRoom) => {
   return newRoom;
 };
 
-
 const getAllRoomsFromDB = async (query: Record<string, unknown>) => {
   const roomQuery = new QueryBuilder(RoomModel.find(), query)
     .search(['name', 'amenities'])
@@ -24,8 +23,6 @@ const getAllRoomsFromDB = async (query: Record<string, unknown>) => {
   };
 };
 
-
-
 const getSingleRoomFromDB = async (id: string) => {
   const result = await RoomModel.findById({ _id: id });
   return result;
@@ -34,7 +31,7 @@ const getSingleRoomFromDB = async (id: string) => {
 const updateRoomIntoDB = async (id: string, payload: Partial<TRoom>) => {
   const result = await RoomModel.findOneAndUpdate({ _id: id }, payload, {
     new: true,
-    runValidators : true,
+    runValidators: true,
   });
   return result;
 };

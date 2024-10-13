@@ -1,46 +1,49 @@
 import { Schema, model } from 'mongoose';
 import { RoomModelInterface, TRoom } from './room.iterface';
 
-const roomSchema = new Schema<TRoom, RoomModelInterface>({
-  name: {
-    type: String,
-    required: true,
+const roomSchema = new Schema<TRoom, RoomModelInterface>(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    img: {
+      type: String,
+      required: true,
+    },
+    detailImages: {
+      type: [String],
+      required: true,
+    },
+    roomNo: {
+      type: Number,
+      required: true,
+    },
+    floorNo: {
+      type: Number,
+      required: true,
+    },
+    capacity: {
+      type: Number,
+      required: true,
+    },
+    pricePerSlot: {
+      type: Number,
+      required: true,
+    },
+    amenities: {
+      type: [String],
+      required: true,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
-  img: {
-    type: String,
-    required: true,
+  {
+    timestamps: true,
   },
-  detailImages: {
-    type: [String],
-    required: true,
-  },
-  roomNo: {
-    type: Number,
-    required: true,
-  },
-  floorNo: {
-    type: Number,
-    required: true,
-  },
-  capacity: {
-    type: Number,
-    required: true,
-  },
-  pricePerSlot: {
-    type: Number,
-    required: true,
-  },
-  amenities: {
-    type: [String],
-    required: true,
-  },
-  isDeleted: {
-    type: Boolean,
-    default : false
-  },
-},{
-  timestamps : true
-});
+);
 
 /* roomSchema.pre('find', async function (next) {
    this.find({ isDeleted: { $ne: true } });
@@ -51,8 +54,6 @@ const roomSchema = new Schema<TRoom, RoomModelInterface>({
   next();
 }); //this make conflict while creating slot with deleted room...insteadof showing "Room is deleted", it shows "Room does not exist", as when conducting find operation, pre hook middleware was preventing to get data of where isDeleted field is true
 */
-
-
 
 roomSchema.pre('find', async function (next) {
   this.find({ isDeleted: { $ne: true } });

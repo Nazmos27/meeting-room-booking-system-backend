@@ -1,32 +1,35 @@
 import { Schema, model } from 'mongoose';
 import { SlotModelInterface, TSlot } from './slot.interface';
 
-const slotSchema = new Schema<TSlot, SlotModelInterface>({
-  room: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: 'rooms',
+const slotSchema = new Schema<TSlot, SlotModelInterface>(
+  {
+    room: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: 'rooms',
+    },
+    date: {
+      type: String,
+      required: true,
+    },
+    startTime: {
+      type: String,
+      required: true,
+    },
+    endTime: {
+      type: String,
+      required: true,
+    },
+    isBooked: {
+      type: Boolean,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
-  date: {
-    type: String,
-    required: true,
-  },
-  startTime: {
-    type: String,
-    required: true,
-  },
-  endTime: {
-    type: String,
-    required: true,
-  },
-  isBooked: {
-    type: Boolean,
-  },
-  isDeleted: {
-    type: Boolean,
-    default: false,
-  },
-},{timestamps : true});
+  { timestamps: true },
+);
 
 slotSchema.pre('save', async function (next) {
   this.isBooked = false;

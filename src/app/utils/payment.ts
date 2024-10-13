@@ -12,7 +12,7 @@ export const initiatePayment = async (paymentData: TPaymentData) => {
       tran_id: paymentData.transactionId,
       success_url: `http://localhost:5000/api/payment/confirmation?txnId=${paymentData.transactionId}&status=success`,
       fail_url: `http://localhost:5000/api/payment/confirmation?status=failed`,
-      cancel_url: 'http://localhost:5173/',
+      cancel_url: 'https://reserve-it-ten.vercel.app/',
       amount: paymentData.totalAmount,
       currency: 'BDT',
       desc: 'Room Booking Payment',

@@ -55,7 +55,6 @@ const deleteUserIntoDB = async (userId: string) => {
   return result;
 };
 
-
 export const UserServices = {
   createLoginInfoIntoDB,
   updateLoginInfo,

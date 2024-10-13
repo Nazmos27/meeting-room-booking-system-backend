@@ -95,7 +95,31 @@ const getAvailableSlots = async (query?: Record<string, unknown>) => {
   }
 };
 
+const updateSlotIntoDB = async (id: string, payload: Partial<TSlot>) => {
+  const result = await SlotModel.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
+  });
+  return result;
+};
+
+const deleteSlotFromDB = async (id: string) => {
+  const result = await SlotModel.findByIdAndUpdate(
+    id,
+    {
+      isDeleted: true,
+    },
+    {
+      new: true,
+    },
+  );
+
+  return result;
+};
+
 export const SlotServices = {
   createSlotIntoDB,
   getAvailableSlots,
+  updateSlotIntoDB,
+  deleteSlotFromDB,
 };

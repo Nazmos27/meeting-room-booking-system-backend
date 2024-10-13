@@ -24,4 +24,4 @@ const confirmationService = async (txnId: string) => {
 
 export const paymentServices = {
   confirmationService,
-};  
+};

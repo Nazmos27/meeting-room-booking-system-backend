@@ -1,5 +1,5 @@
 export const messageTemplate = (status: string) => {
-    const html = `
+  const html = `
   <!DOCTYPE html>
   <html lang="en">
   <head>
@@ -55,19 +55,17 @@ export const messageTemplate = (status: string) => {
               ? `
               <h1>Payment Successful!</h1>
               <p>Your transaction has completed successfully.</p>
-              <a href="http://localhost:5173/my-bookings">Go to My Bookings</a>
+              <a href="https://reserve-it-ten.vercel.app/my-bookings">Go to My Bookings</a>
           `
               : `
               <h1>Payment Failed!</h1>
               <p>Unfortunately, your payment could not be processed.</p>
-              <a href="http://localhost:5173/rooms">Try Again</a>
+              <a href="https://reserve-it-ten.vercel.app/rooms">Try Again</a>
           `
           }
       </div>
   </body>
   </html>
   `;
-    return html;
-  };
-
-  //todo:change href property with deployed link
+  return html;
+};

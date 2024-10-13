@@ -28,7 +28,6 @@ export const roomValidationSchema = z.object({
   }),
 });
 
-
 export const updateRoomsValidationSchema = z.object({
   name: z.string().nonempty({ message: 'Name is required' }).optional(),
   img: z.string().nonempty({ message: 'Img is required' }).optional(),

@@ -10,7 +10,7 @@ app.use(express.json());
 // app.use(cors());
 app.use(
   cors({
-    origin: ['http://localhost:5173'],
+    origin: ['http://localhost:5173', 'https://reserve-it-ten.vercel.app'],
     credentials: true,
   }),
 );

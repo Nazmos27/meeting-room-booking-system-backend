@@ -6,10 +6,9 @@ import validateRequest from '../../middlewares/validateRequest';
 import { bookingValidationSchema } from './booking.validation';
 
 const router = Router();
-const mybookingRouter = Router();
 
-mybookingRouter.get(
-  '/',
+router.get(
+  '/my-bookings',
   auth(USER_ROLE.admin, USER_ROLE.user),
   BookingControllers.getMyBookings,
 );
@@ -28,4 +27,3 @@ router.patch('/:id', auth(USER_ROLE.admin), BookingControllers.updateBooking);
 router.delete('/:id', auth(USER_ROLE.admin), BookingControllers.deleteBooking);
 
 export const BookingRoutes = router;
-export const MyBookingsRoute = mybookingRouter;

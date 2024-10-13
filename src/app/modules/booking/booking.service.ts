@@ -6,11 +6,11 @@ import { BookingModel } from './booking.model';
 import AppError from '../../errors/AppError';
 import { SlotModel } from '../slot/slot.model';
 import { UserModel } from '../user/user.model';
-import mongoose, { Types } from 'mongoose';
 import config from '../../config';
 import QueryBuilder from '../../../builder/QueryBuilder';
 import { generateTransactionId } from '../../utils/generateTnxId';
 import { initiatePayment } from '../../utils/payment';
+import mongoose, { Types } from 'mongoose';
 
 const createBookingIntoDB = async (payload: TBooking) => {
   //check if that room exists
@@ -38,7 +38,10 @@ const createBookingIntoDB = async (payload: TBooking) => {
   };
 
   await checkSlots(slotArray);
-  await SlotModel.updateMany({ _id: { $in: payload.slots } }, { isBooked: true });
+  await SlotModel.updateMany(
+    { _id: { $in: payload.slots } },
+    { isBooked: true },
+  );
   // if (success) {
   //   for (const item of slotArray) {
   //     const slotId = new mongoose.Types.ObjectId(item);
@@ -50,9 +53,9 @@ const createBookingIntoDB = async (payload: TBooking) => {
   //     );
   //   }
   // }
-   // Mark slots as booked
-   //await SlotModel.updateMany({ _id: { $in: slots } }, { isBooked: true });
-   //this command also update slots that has been booked
+  // Mark slots as booked
+  //await SlotModel.updateMany({ _id: { $in: slots } }, { isBooked: true });
+  //this command also update slots that has been booked
 
   //check if the user exists
   const userDataForChecking = {
@@ -62,14 +65,6 @@ const createBookingIntoDB = async (payload: TBooking) => {
 
   const user = await UserModel.isUserExistChecker(userDataForChecking);
   if (!user) throw new AppError(httpStatus.NOT_FOUND, 'User does not exist');
-
-  // const userEmail = user?.email;
-  // if ((await UserModel.isAuthorizedUserChecker(userEmail)) === false) {
-  //   throw new AppError(
-  //     httpStatus.UNAUTHORIZED,
-  //     'Use your unique User Id to create booking',
-  //   );
-  // }
 
   const transactionId = generateTransactionId(user);
   await BookingModel.create({
@@ -86,8 +81,10 @@ const createBookingIntoDB = async (payload: TBooking) => {
   const paymentData = await initiatePayment(bookingData);
 
   // Mark slots as booked
-  await SlotModel.updateMany({ _id: { $in: payload.slots } }, { isBooked: true });
-
+  await SlotModel.updateMany(
+    { _id: { $in: payload.slots } },
+    { isBooked: true },
+  );
 
   return paymentData.data;
 };
@@ -95,9 +92,9 @@ const createBookingIntoDB = async (payload: TBooking) => {
 const getAllBookingsFromDB = async (query: Record<string, unknown>) => {
   const allBookingsQuery = new QueryBuilder(
     BookingModel.find({ isDeleted: false })
-    .populate({ path: 'user', select: '-password' })
-    .populate('room')
-    .populate('slots'),
+      .populate({ path: 'user', select: '-password' })
+      .populate('room')
+      .populate('slots'),
     query,
   )
     .search(['date'])
@@ -113,9 +110,6 @@ const getAllBookingsFromDB = async (query: Record<string, unknown>) => {
     result,
   };
 };
-
-
-
 
 const getMyBookingsFromDB = async (token: string) => {
   const decoded = jwt.verify(

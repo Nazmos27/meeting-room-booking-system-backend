@@ -64,13 +64,13 @@ const bookingSchema = new Schema<TBooking>(
 //   next();
 // });
 
-bookingSchema.post('save', async function (doc, next) {
-  await doc.populate([
-    { path: 'user', select: '-password' }, // Exclude password field
-    { path: 'room' },
-    { path: 'slots' },
-  ]);
-  next();
-});
+// bookingSchema.post('save', async function (doc, next) {
+//   await doc.populate([
+//     { path: 'user', select: '-password' }, // Exclude password field
+//     { path: 'room' },
+//     { path: 'slots' },
+//   ]);
+//   next();
+// });
 
 export const BookingModel = model<TBooking>('bookings', bookingSchema);

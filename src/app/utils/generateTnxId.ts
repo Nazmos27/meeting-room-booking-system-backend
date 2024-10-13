@@ -1,4 +1,4 @@
-import { TUser } from "../modules/user/user.interface";
+import { TUser } from '../modules/user/user.interface';
 
 export const generateTransactionId = (user: TUser) => {
   // get the last 4 digit of user phone number
